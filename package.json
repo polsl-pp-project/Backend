@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend pp",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polsl-pp-project/Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polsl-pp-project/Backend/issues"
+  },
+  "homepage": "https://github.com/polsl-pp-project/Backend#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security"
+  }
+}
