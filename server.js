@@ -15,9 +15,43 @@ mongoose
         useCreateIndex: true,
         useFindAndModify: false,
     })
-    .then((con) => {
-        console.log(con.connections);
+    .then(() => {
         console.log('DB connection successful!');
+    });
+
+const carSchema = new mongoose.Schema({
+    carBrand: String,
+    price: Number,
+    year: Number,
+    mileage: Number,
+    body: String,
+    fuelType: String,
+    transmission: String,
+    doors: Number,
+    color: String,
+    drive: String,
+    power: Number,
+    engineCapacity: Number,
+    trunkCapacity: Number,
+    fuelConsumption: Number,
+    description: String,
+});
+const Car = mongoose.model('Car', carSchema);
+
+const testCar = new Car({
+    carBrand: 'Test Car2',
+    year: 2002,
+    price: 3400,
+    description: 'test description2',
+});
+
+testCar
+    .save()
+    .then((doc) => {
+        console.log(doc);
+    })
+    .catch((err) => {
+        console.log('ERROR:', err);
     });
 
 const port = process.env.PORT || 3000;
