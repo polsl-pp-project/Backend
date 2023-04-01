@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
+const carRouter = require('./routes/carRoutes');
+const userRouter = require('./routes/userRoutes');
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -15,7 +17,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.use('/api/v1/cars', carRouter);
-// app.use('/api/v1/users', userRouter);
+app.use('/api/v1/cars', carRouter);
+app.use('/api/v1/users', userRouter);
 
 module.exports = app;

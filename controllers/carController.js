@@ -1,31 +1,8 @@
-const fs = require('fs');
 const Car = require('./../models/carModel');
 
 // const cars = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/cars.json`));
 
-exports.checkID = (req, res, next, val) => {
-    console.log(`Car id is: ${val}`);
-
-    if (req.params.id * 1 > cars.length) {
-        return res.status(404).json({
-            status: 'fail',
-            message: 'invalid ID',
-        });
-    }
-    next();
-};
-
-exports.checkBody = (req, res, next) => {
-    if (!req.body.carBrand || !req.body.price) {
-        return res.status(400).json({
-            status: 'fail',
-            message: 'missing required parameters',
-        });
-    }
-    next();
-};
-
-const getAllCars = (req, res) => {
+exports.getAllCars = (req, res) => {
     console.log(req.requestTime);
     res.status(200).json({
         status: 'success',
@@ -56,28 +33,22 @@ exports.getCar = (req, res) => {
     // });
 };
 
-exports.createCar = (req, res) => {
-    res.status(201).json({
-        status: 'success',
-        // data: {
-        //     car: newCar,
-        // },
-    });
-    // const newId = cars[cars.length - 1].id + 1;
-    // const newCar = Object.assign({ id: newId }, req.body);
-    // cars.push(newCar);
-    // fs.writeFile(
-    //     `${__dirname}/dev-data/cars.json`,
-    //     JSON.stringify(cars),
-    //     (err) => {
-    //         res.status(201).json({
-    //             status: 'success',
-    //             data: {
-    //                 car: newCar,
-    //             },
-    //         });
-    //     }
-    // );
+exports.createCar = async (req, res) => {
+    try {
+        const newCar = await Car.create(req.body);
+
+        res.status(201).json({
+            status: 'success',
+            data: {
+                car: newCar,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
 exports.updateCar = (req, res) => {
     // if (req.params.id * 1 > cars.length) {
