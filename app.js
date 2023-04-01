@@ -15,4 +15,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// app.use('/api/v1/cars', carRouter);
+// app.use('/api/v1/users', userRouter);
+
 module.exports = app;
