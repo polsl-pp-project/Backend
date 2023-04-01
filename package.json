@@ -1,23 +1,28 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "Backend pp",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/polsl-pp-project/Backend.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/polsl-pp-project/Backend/issues"
-  },
-  "homepage": "https://github.com/polsl-pp-project/Backend#readme",
-  "dependencies": {
-    "express": "^4.18.2",
-    "fs": "^0.0.1-security"
-  }
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "Backend pp",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/polsl-pp-project/Backend.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/polsl-pp-project/Backend/issues"
+    },
+    "homepage": "https://github.com/polsl-pp-project/Backend#readme",
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "fs": "^0.0.1-security",
+        "mongoose": "^5.13.16",
+        "morgan": "^1.10.0",
+        "nodemon": "^2.0.22"
+    }
 }
