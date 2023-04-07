@@ -2,16 +2,15 @@ const Car = require('./../models/carModel');
 
 // const cars = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/cars.json`));
 
-exports.getAllCars = (req, res) => {
-    console.log(req.requestTime);
-    console.log('GET CARS');
+exports.getAllCars = async (req, res) => {
+    const cars = await Car.find();
+
     res.status(200).json({
         status: 'success',
-        requestedAt: req.requestTime,
-        // results: cars.length,
-        // data: {
-        //     cars,
-        // },
+        results: cars.length,
+        data: {
+            cars,
+        },
     });
 };
 
@@ -47,7 +46,7 @@ exports.createCar = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: 'invalid data sent',
         });
     }
 };
