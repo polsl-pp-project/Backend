@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
     try {
-        this.password = await bcrypt.hash(this.password, 12);
+        this.password = await bcrypt.hash(this.password, 12); //drugi parametr oznacza jak dokładne ma byc hashowanie - defaultowo 10
 
         this.passwordConfirm = undefined;
         next();
@@ -47,3 +47,12 @@ userSchema.pre('save', async function (next) {
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
+
+//example body of POST
+// {
+//     "name": "Tyler",
+//     "lastName": "Durden",
+//     "email": "testing@test.io",
+//     "password": "password123",
+//     "passwordConfirm": "password123"
+// }
