@@ -4,6 +4,7 @@ const Car = require('./../models/carModel');
 
 exports.getAllCars = (req, res) => {
     console.log(req.requestTime);
+    console.log('GET CARS');
     res.status(200).json({
         status: 'success',
         requestedAt: req.requestTime,
