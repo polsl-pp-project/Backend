@@ -25,9 +25,14 @@ const userSchema = new mongoose.Schema({
     passwordConfirm: {
         type: String,
         required: [true, 'Confirm your password'],
+        validate: {
+            validator: function (el) {
+                return el === this.password;
+            },
+            message: 'Passwords are not the same',
+        },
     },
 });
-
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
