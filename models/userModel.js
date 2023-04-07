@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Enter your password'],
         minlength: 5, //minimalna dlugosc hasla (tutaj przykladowo 5 znaków)
+        select: false,
     },
     passwordConfirm: {
         type: String,
@@ -37,13 +38,16 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
-    try {
-        this.password = await bcrypt.hash(this.password, 12); //drugi parametr oznacza jak dokładne ma byc hashowanie - defaultowo 10
 
-        this.passwordConfirm = undefined;
-        next();
-    } catch (err) {}
+    this.password = await bcrypt.hash(this.password, 12); //drugi parametr oznacza jak dokładne ma byc hashowanie - defaultowo 10
+
+    this.passwordConfirm = undefined;
+    next();
 });
+
+userSchema.methods.correctPassword = async function (candidatePass, userPass) {
+    return await bcrypt.compare(candidatePass, userPass);
+};
 
 const User = mongoose.model('User', userSchema);
 module.exports = User;
