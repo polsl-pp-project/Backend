@@ -3,34 +3,40 @@ const Car = require('./../models/carModel');
 // const cars = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/cars.json`));
 
 exports.getAllCars = async (req, res) => {
-    const cars = await Car.find();
+    try {
+        const cars = await Car.find();
 
-    res.status(200).json({
-        status: 'success',
-        results: cars.length,
-        data: {
-            cars,
-        },
-    });
+        res.status(200).json({
+            status: 'success',
+            results: cars.length,
+            data: {
+                cars,
+            },
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
 
-exports.getCar = (req, res) => {
-    console.log(req.params);
-    const id = req.params.id + 1;
+exports.getCar = async (req, res) => {
+    try {
+        const car = await Car.findById(req.params.id);
 
-    // const car = cars.find((el) => el.id === id);
-    // if (!car) {
-    //     return res.status(404).json({
-    //         status: 'fail',
-    //         message: 'invalid ID',
-    //     });
-    // }
-    // res.status(200).json({
-    //     status: 'success',
-    //     data: {
-    //         car,
-    //     },
-    // });
+        res.status(200).json({
+            status: 'success',
+            data: {
+                car,
+            },
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
 
 exports.createCar = async (req, res) => {
@@ -50,29 +56,36 @@ exports.createCar = async (req, res) => {
         });
     }
 };
-exports.updateCar = (req, res) => {
-    // if (req.params.id * 1 > cars.length) {
-    //     return res.status(404).json({
-    //         status: 'fail',
-    //         message: 'invalid ID',
-    //     });
-    // }
-    res.status(200).json({
-        status: 'success',
-        data: {
-            car: 'updated car here',
-        },
-    });
+exports.updateCar = async (req, res) => {
+    try {
+        const car = await Car.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        res.status(200).json({
+            status: 'success',
+            data: {
+                car,
+            },
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
-exports.deleteCar = (req, res) => {
-    // if (req.params.id * 1 > cars.length) {
-    //     return res.status(404).json({
-    //         status: 'fail',
-    //         message: 'invalid ID',
-    //     });
-    // }
-    res.status(204).json({
-        status: 'success',
-        data: null,
-    });
+exports.deleteCar = async (req, res) => {
+    try {
+        await Car.findByIdAndDelete(req.params.id);
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err,
+        });
+    }
 };
