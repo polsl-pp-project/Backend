@@ -21,6 +21,7 @@
         "bcryptjs": "^2.4.3",
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
+        "express-restrict": "^0.0.3",
         "fs": "^0.0.1-security",
         "jsonwebtoken": "^9.0.0",
         "mongoose": "^5.13.16",
