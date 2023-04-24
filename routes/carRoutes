@@ -15,7 +15,7 @@ router
     .patch(carController.updateCar)
     .delete(
         authController.protect,
-        authController.restrictTO('admin'),
+        authController.restrictTo('admin'),
         carController.deleteCar
     );
 
