@@ -16,6 +16,7 @@ const carSchema = new mongoose.Schema({
     trunkCapacity: Number, //pojemnosc bagaznika
     fuelConsumption: Number, //spalanie
     description: String, //krotki opis
+    car_image: String,
 });
 const Car = mongoose.model('Car', carSchema);
 
