@@ -5,18 +5,18 @@ const authController = require('./../controllers/authController');
 const router = express.Router();
 
 router
-    .route('/')
-    .get(authController.protect, carController.getAllCars)
-    .post(carController.createCar);
+	.route('/')
+	.get(authController.protect, carController.getAllCars)
+	.post(carController.createCar);
 
 router
-    .route('/:id')
-    .get(carController.getCar)
-    .patch(carController.updateCar)
-    .delete(
-        authController.protect,
-        authController.restrictTo('admin'),
-        carController.deleteCar
-    );
+	.route('/:number')
+	.get(carController.getCarByNumber)
+	.patch(carController.updateCarByNumber)
+	.delete(
+		authController.protect,
+		authController.restrictTo('admin'),
+		carController.deleteCarByNumber
+	);
 
 module.exports = router;
