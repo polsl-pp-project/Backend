@@ -1,19 +1,21 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const app = express();
 const carRouter = require('./routes/carRoutes');
 const userRouter = require('./routes/userRoutes');
 
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 app.use((req, res, next) => {
-    next();
+	next();
 });
 
 app.use((req, res, next) => {
-    req.requestTime = new Date().toISOString();
-    next();
+	req.requestTime = new Date().toISOString();
+	next();
 });
 
 app.use('/api/v1/cars', carRouter);
