@@ -199,7 +199,34 @@ exports.verifyToken = catchAsync((req, res) => {
 
 	// Verify the token using your secret key
 	const decoded = jwt.verify(token, process.env.JWT_SECRET);
+	const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
+    let expiresInMinutes = Math.ceil((decoded.exp - currentTime) / 60);
 
 	// If the token is valid and not expired, send a response with status code 200
-	res.status(200).send({ message: 'Token is valid and active' });
+	res.status(200).json({
+		status: 'success',
+		message: 'Token is valid and active',
+		userid: decoded.id,
+		expires: expiresInMinutes
+	});
+	return decoded.id;
 });
+
+// process.env.JWT_EXPIRES_IN
+exports.refreshToken=catchAsync((req,res)=>{
+	const token = req.headers.authorization.split(' ')[1];
+	const decoded = jwt.verify(token, process.env.JWT_SECRET);
+	const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
+    let expiresInMinutes = Math.ceil((decoded.exp - currentTime) / 60);
+	
+	expiresInMinutes=expiresInMinutes<5?10:expiresInMinutes;
+	const refreshedToken = jwt.sign({ id: decoded.id }, process.env.JWT_SECRET, {
+		expiresIn: (expiresInMinutes) * 60, // Extend expiration by x+5 minutes
+	  });
+	res.status(200).json({
+		status: 'success',
+		expiresIn: expiresInMinutes,
+		newToken: refreshedToken
+	});
+	return refreshedToken;
+})
