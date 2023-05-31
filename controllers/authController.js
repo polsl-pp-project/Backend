@@ -194,7 +194,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         token,
     });
 });
-exports.verifyToken = catchAsync((req, res) => {
+exports.verifyToken = catchAsync(async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
 
     // Verify the token using your secret key
@@ -213,7 +213,7 @@ exports.verifyToken = catchAsync((req, res) => {
 });
 
 // process.env.JWT_EXPIRES_IN
-exports.refreshToken = catchAsync((req, res) => {
+exports.refreshToken = catchAsync(async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const currentTime = Math.floor(Date.now() / 1000); // Convert current time to seconds
