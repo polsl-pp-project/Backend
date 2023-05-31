@@ -2,8 +2,10 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const { v4: uuidv4 } = require('uuid');
 
 const userSchema = new mongoose.Schema({
+    customId: { type: String, unique: true },
     name: {
         type: String,
         required: [true, 'Enter your name'],
@@ -60,6 +62,14 @@ userSchema.pre('save', function (next) {
     this.passwordChangedAt = Date.now() - 1000;
     next();
 });
+
+userSchema.pre('save', function (next) {
+    if (!this.customId) {
+        this.customId = uuidv4();
+    }
+    next();
+});
+
 userSchema.methods.correctPassword = async function (candidatePass, userPass) {
     return await bcrypt.compare(candidatePass, userPass);
 };

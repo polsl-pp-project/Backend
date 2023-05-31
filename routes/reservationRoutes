@@ -1,0 +1,17 @@
+const express = require('express');
+const reservationController = require('./../controllers/reservationController.js');
+
+const router = express.Router();
+
+router
+    .route('/')
+    .get(reservationController.getAllReservations)
+    .post(reservationController.createReservation);
+
+router
+    .route('/:customId')
+    .get(reservationController.getReservationById)
+    .patch(reservationController.updateReservationById)
+    .delete(reservationController.deleteReservationById);
+
+module.exports = router;
