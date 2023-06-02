@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const carSchema = new mongoose.Schema({
-	number: Number,
+	number: Number, //numer jako id
 	carBrand: String, //marka
 	price: Number, //cena za miesiac wynajmu
 	year: Number, //rocznik
@@ -17,7 +17,8 @@ const carSchema = new mongoose.Schema({
 	trunkCapacity: Number, //pojemnosc bagaznika
 	fuelConsumption: Number, //spalanie
 	description: String, //krotki opis
-	car_image: String,
+	car_image: String, //obrazek
+	isOccupied:{type:Boolean,default:false} //czy jest zarezerwowany
 });
 
 carSchema.pre('save', async function (next) {

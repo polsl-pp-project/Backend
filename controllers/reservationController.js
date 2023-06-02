@@ -1,4 +1,6 @@
 const Reservation = require('./../models/reservationModel');
+const Car = require('./../models/carModel');
+const User = require('./../models/userModel');
 
 exports.getAllReservations = async (req, res) => {
     try {
@@ -41,8 +43,22 @@ exports.getReservationById = async (req, res) => {
 
 exports.createReservation = async (req, res) => {
     try {
-        const newReservation = await Reservation.create(req.body);
+        const {password, passwordConfirm,...reservationData}=req.body;
 
+        const newReservation = await Reservation.create(reservationData);
+        const car = await Car.findOne({number: newReservation.carNumber});
+        if(!car) throw new Error('Car not found');
+        if(car.isOccupied) throw new Error('Car is already occupied');
+        car.isOccupied=true;
+        await car.save();
+
+        const userId = newReservation.userId;
+        const user = await User.findOne({ customId: userId });
+
+        user.reservations.push(newReservation.customId);
+        user.markModified('reservations');
+        await user.save();
+        
         res.status(201).json({
             status: 'success',
             data: {
@@ -50,6 +66,7 @@ exports.createReservation = async (req, res) => {
             },
         });
     } catch (err) {
+        console.log(err);
         res.status(400).json({
             status: 'fail',
             message: 'invalid data sent',
@@ -82,15 +99,28 @@ exports.updateReservationById = async (req, res) => {
 };
 exports.deleteReservationById = async (req, res) => {
     try {
+        const reservation = await Reservation.findOne({ customId: req.params.customId });
+        const carNumber = reservation.carNumber;
+        const car = await Car.findOne({ number:carNumber });
+        car.isOccupied = false;
+        await car.save();
+
+        const userId = reservation.userId;
+        const user = await User.findOne({ customId:userId });
+        const reservationsFiltered=user.reservations.filter((r)=>r!=reservation.customId);
+        user.reservations=reservationsFiltered;
+        await user.save();
+
         await Reservation.findOneAndDelete({ customId: req.params.customId });
         res.status(204).json({
             status: 'success',
             data: null,
         });
     } catch (err) {
+        console.log(err);
         res.status(404).json({
             status: 'fail',
-            message: err,
+            message: "failed to delete reservation",
         });
     }
 };

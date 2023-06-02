@@ -8,6 +8,8 @@ router
     .get(reservationController.getAllReservations)
     .post(reservationController.createReservation);
 
+
+
 router
     .route('/:customId')
     .get(reservationController.getReservationById)

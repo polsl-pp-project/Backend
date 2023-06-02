@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
     },
     passwordConfirm: {
         type: String,
-        required: [true, 'Confirm your password'],
+        // required: [true, 'Confirm your password'],
         validate: {
             validator: function (el) {
                 return el === this.password;
@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    reservations: [{type: String}]
 });
 
 userSchema.pre('save', async function (next) {
