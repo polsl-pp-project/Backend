@@ -245,10 +245,19 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     createSendToken(user, 200, res);
 });
 
-// exports.getUserByJwt = catchAsync((req, res) => {
-//     const token = req.headers.authorization.split(' ')[1];
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     const userId = decoded.userId;
+exports.getUserByJwt = catchAsync(async (req, res) => {
+	const token = req.headers.authorization.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+	const user = await User.findOne({
+		_id: userId,
+	});
+	console.log(user);
+	res.status(200).json({
+		status: 'success',
+		data: {
+			user,
+		},
+	});
 
-//     return this.findOne({ _id: userId });
-// });
+});

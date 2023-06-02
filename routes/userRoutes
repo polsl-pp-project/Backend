@@ -9,7 +9,7 @@ router.post('/login', authController.login);
 router.get('/verify', authController.verifyToken);
 router.get('/refresh', authController.refreshToken);
 
-// router.get('/userid', authController.getUserByJwt);
+router.get('/userjwt', authController.getUserByJwt);
 
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
