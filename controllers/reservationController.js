@@ -45,13 +45,13 @@ exports.createReservation = async (req, res) => {
     try {
         const {password, passwordConfirm,...reservationData}=req.body;
 
-        const newReservation = await Reservation.create(reservationData);
-        const car = await Car.findOne({number: newReservation.carNumber});
+        const car = await Car.findOne({number: reservationData.carNumber});
         if(!car) throw new Error('Car not found');
         if(car.isOccupied) throw new Error('Car is already occupied');
         car.isOccupied=true;
         await car.save();
-
+        
+        const newReservation = await Reservation.create(reservationData);
         const userId = newReservation.userId;
         const user = await User.findOne({ customId: userId });
 
