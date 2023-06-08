@@ -51,14 +51,15 @@ exports.createReservation = async (req, res) => {
         car.isOccupied=true;
         await car.save();
         
-        const newReservation = await Reservation.create(reservationData);
-        const userId = newReservation.userId;
+        const userId = reservationData.userId;
         const user = await User.findOne({ customId: userId });
-
-        user.reservations.push(newReservation.customId);
+        
+        user.reservations.push(reservationData.customId);
         user.markModified('reservations');
         await user.save();
         
+        const newReservation = await Reservation.create(reservationData);
+
         res.status(201).json({
             status: 'success',
             data: {
