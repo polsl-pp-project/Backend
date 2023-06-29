@@ -82,8 +82,9 @@ exports.updateUserById = async (req, res) => {
     }
 };
 exports.deleteUserById = async (req, res) => {
+    console.log(req.params);
     try {
-        await User.findOneAndDelete({ customId: req.params.customId });
+        await User.findOneAndDelete({ customId: req.params.id });
         res.status(204).json({
             status: 'success',
             data: null,
@@ -95,3 +96,18 @@ exports.deleteUserById = async (req, res) => {
         });
     }
 };
+
+// exports.deleteCarByNumber = async (req, res) => {
+//     try {
+//         await Car.findOneAndDelete({ number: req.params.number });
+//         res.status(204).json({
+//             status: 'success',
+//             data: null,
+//         });
+//     } catch (err) {
+//         res.status(404).json({
+//             status: 'fail',
+//             message: err,
+//         });
+//     }
+// };
