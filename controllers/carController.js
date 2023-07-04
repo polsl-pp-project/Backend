@@ -27,17 +27,23 @@ exports.getAvailableCars = async (req, res) => {
     const newStartDate = new Date(startDate);
     const newEndDate = new Date(endDate);
     try {
+        const allCarNumbers = await Car.find({}, { number: 1 });
+        const carNumbers = allCarNumbers.map((car) => car.number);
+
         const reservations = await Reservation.find({
-            $or: [
-                { startDate: { $gte: newEndDate } }, // Reservations starting after the given period
-                { endDate: { $lte: newStartDate } }, // Reservations ending before the given period
+            $and: [
+                { startDate: { $gte: newStartDate } }, // Reservations starting after the given period
+                { endDate: { $lte: newEndDate } }, // Reservations ending before the given period
             ],
         });
-        const carNumbers = reservations.map(
+        const reservedCarNumbers = reservations.map(
             (reservation) => reservation.carNumber
         );
+        const matchingNumbers = carNumbers.filter(
+            (number) => !reservedCarNumbers.includes(number)
+        );
         const matchingCars = await Car.find({
-            $or: [{ number: { $in: carNumbers } }, { isOccupied: false }],
+            number: { $in: matchingNumbers },
         });
         res.status(200).json({
             status: 'success',

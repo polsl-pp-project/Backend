@@ -44,10 +44,32 @@ exports.getReservationById = async (req, res) => {
 exports.createReservation = async (req, res) => {
     try {
         const { ...reservationData } = req.body;
+        const newStartDate = new Date(reservationData.startDate);
+        const newEndDate = new Date(reservationData.endDate);
+        console.log(newStartDate, newEndDate);
         const car = await Car.findOne({ number: reservationData.carNumber });
         if (!car) throw new Error('Car not found');
-        if (car.isOccupied) throw new Error('Car is already occupied');
-        car.isOccupied = true;
+
+        const existingReservations = await Reservation.find({
+            carNumber: reservationData.carNumber,
+        });
+        if (existingReservations.length > 0) {
+            existingReservations.forEach((reservation) => {
+                console.log(reservation);
+                if (
+                    reservation.startDate >= newEndDate ||
+                    reservation.endDate <= newStartDate
+                ) {
+                    console.log('Car is not occuppied within this time period');
+                } else {
+                    throw new Error('Car is occuppied within this time period');
+                }
+            });
+        }
+        console.log(existingReservations);
+        // if (car.isOccupied) throw new Error('Car is already occupied');
+
+        // car.isOccupied = true;
         await car.save();
 
         const userId = reservationData.userId;
@@ -103,7 +125,7 @@ exports.deleteReservationById = async (req, res) => {
         });
         const carNumber = reservation.carNumber;
         const car = await Car.findOne({ number: carNumber });
-        car.isOccupied = false;
+        // car.isOccupied = false;
         await car.save();
 
         const userId = reservation.userId;
