@@ -22,35 +22,11 @@ exports.getAllCars = async (req, res) => {
     }
 };
 
-// exports.getAvailableCars = async (req, res) => {
-//     try {
-//         const cars = await Car.find({ isOccupied: false });
-
-//         res.status(200).json({
-//             status: 'success',
-//             results: cars.length,
-//             data: {
-//                 cars,
-//             },
-//         });
-//     } catch (err) {
-//         res.status(404).json({
-//             status: 'fail',
-//             message: err,
-//         });
-//     }
-// };
-
 exports.getAvailableCars = async (req, res) => {
     const { startDate, endDate } = req.body; // Assuming the start and end dates are provided in the request body
     const newStartDate = new Date(startDate);
     const newEndDate = new Date(endDate);
     try {
-        const reservationsTest = await Reservation.find();
-
-        // console.log(
-        //     reservationsTest[0].startDate.getTime() === newStartDate.getTime()
-        // );
         const reservations = await Reservation.find({
             $or: [
                 { startDate: { $gte: newEndDate } }, // Reservations starting after the given period
