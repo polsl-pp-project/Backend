@@ -60,8 +60,9 @@ exports.getAvailableCars = async (req, res) => {
         const carNumbers = reservations.map(
             (reservation) => reservation.carNumber
         );
-        const matchingCars = await Car.find({ number: { $in: carNumbers } });
-
+        const matchingCars = await Car.find({
+            $or: [{ number: { $in: carNumbers } }, { isOccupied: false }],
+        });
         res.status(200).json({
             status: 'success',
             results: carNumbers.length,
