@@ -1,4 +1,5 @@
 const Car = require('./../models/carModel');
+const Reservation = require('./../models/reservationModel');
 
 // const cars = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/cars.json`));
 
@@ -17,6 +18,61 @@ exports.getAllCars = async (req, res) => {
         res.status(404).json({
             status: 'fail',
             message: err,
+        });
+    }
+};
+
+// exports.getAvailableCars = async (req, res) => {
+//     try {
+//         const cars = await Car.find({ isOccupied: false });
+
+//         res.status(200).json({
+//             status: 'success',
+//             results: cars.length,
+//             data: {
+//                 cars,
+//             },
+//         });
+//     } catch (err) {
+//         res.status(404).json({
+//             status: 'fail',
+//             message: err,
+//         });
+//     }
+// };
+
+exports.getAvailableCars = async (req, res) => {
+    const { startDate, endDate } = req.body; // Assuming the start and end dates are provided in the request body
+    const newStartDate = new Date(startDate);
+    const newEndDate = new Date(endDate);
+    try {
+        const reservationsTest = await Reservation.find();
+
+        // console.log(
+        //     reservationsTest[0].startDate.getTime() === newStartDate.getTime()
+        // );
+        const reservations = await Reservation.find({
+            $or: [
+                { startDate: { $gte: newEndDate } }, // Reservations starting after the given period
+                { endDate: { $lte: newStartDate } }, // Reservations ending before the given period
+            ],
+        });
+        const carNumbers = reservations.map(
+            (reservation) => reservation.carNumber
+        );
+        const matchingCars = await Car.find({ number: { $in: carNumbers } });
+
+        res.status(200).json({
+            status: 'success',
+            results: carNumbers.length,
+            data: {
+                matchingCars,
+            },
+        });
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err.message,
         });
     }
 };

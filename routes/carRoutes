@@ -5,6 +5,7 @@ const authController = require('./../controllers/authController');
 const router = express.Router();
 
 router.route('/').get(carController.getAllCars).post(carController.createCar);
+router.route('/available').post(carController.getAvailableCars);
 
 router
     .route('/:number')

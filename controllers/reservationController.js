@@ -43,21 +43,19 @@ exports.getReservationById = async (req, res) => {
 
 exports.createReservation = async (req, res) => {
     try {
-        const {password, passwordConfirm,...reservationData}=req.body;
-
-        const car = await Car.findOne({number: reservationData.carNumber});
-        if(!car) throw new Error('Car not found');
-        if(car.isOccupied) throw new Error('Car is already occupied');
-        car.isOccupied=true;
+        const { ...reservationData } = req.body;
+        const car = await Car.findOne({ number: reservationData.carNumber });
+        if (!car) throw new Error('Car not found');
+        if (car.isOccupied) throw new Error('Car is already occupied');
+        car.isOccupied = true;
         await car.save();
-        
+
         const userId = reservationData.userId;
         const user = await User.findOne({ customId: userId });
-        
         user.reservations.push(reservationData.customId);
         user.markModified('reservations');
         await user.save();
-        
+
         const newReservation = await Reservation.create(reservationData);
 
         res.status(201).json({
@@ -100,16 +98,20 @@ exports.updateReservationById = async (req, res) => {
 };
 exports.deleteReservationById = async (req, res) => {
     try {
-        const reservation = await Reservation.findOne({ customId: req.params.customId });
+        const reservation = await Reservation.findOne({
+            customId: req.params.customId,
+        });
         const carNumber = reservation.carNumber;
-        const car = await Car.findOne({ number:carNumber });
+        const car = await Car.findOne({ number: carNumber });
         car.isOccupied = false;
         await car.save();
 
         const userId = reservation.userId;
-        const user = await User.findOne({ customId:userId });
-        const reservationsFiltered=user.reservations.filter((r)=>r!=reservation.customId);
-        user.reservations=reservationsFiltered;
+        const user = await User.findOne({ customId: userId });
+        const reservationsFiltered = user.reservations.filter(
+            (r) => r != reservation.customId
+        );
+        user.reservations = reservationsFiltered;
         await user.save();
 
         await Reservation.findOneAndDelete({ customId: req.params.customId });
@@ -121,7 +123,7 @@ exports.deleteReservationById = async (req, res) => {
         console.log(err);
         res.status(404).json({
             status: 'fail',
-            message: "failed to delete reservation",
+            message: 'failed to delete reservation',
         });
     }
 };
