@@ -1,6 +1,8 @@
 const Reservation = require('./../models/reservationModel');
 const Car = require('./../models/carModel');
 const User = require('./../models/userModel');
+const catchAsync = require('../utils/catchAsync');
+const jwt = require('jsonwebtoken');
 
 exports.getAllReservations = async (req, res) => {
     try {
@@ -41,8 +43,15 @@ exports.getReservationById = async (req, res) => {
     }
 };
 
-exports.createReservation = async (req, res) => {
+exports.createReservation = catchAsync(async (req, res) => {
     try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const userId = decoded.id;
+        const user = await User.findOne({
+            _id: userId,
+        });
+
         const { ...reservationData } = req.body;
         const newStartDate = new Date(reservationData.startDate);
         const newEndDate = new Date(reservationData.endDate);
@@ -72,8 +81,6 @@ exports.createReservation = async (req, res) => {
         // car.isOccupied = true;
         await car.save();
 
-        const userId = reservationData.userId;
-        const user = await User.findOne({ customId: userId });
         user.reservations.push(reservationData.customId);
         user.markModified('reservations');
         await user.save();
@@ -93,7 +100,7 @@ exports.createReservation = async (req, res) => {
             message: 'invalid data sent',
         });
     }
-};
+});
 exports.updateReservationById = async (req, res) => {
     try {
         const reservation = await Reservation.findOneAndUpdate(
