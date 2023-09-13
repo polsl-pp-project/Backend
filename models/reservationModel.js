@@ -9,13 +9,13 @@ const reservationSchema = new mongoose.Schema({
     userId: { type: String, required: true },
     startPlace: { type: String, required: true },
     endPlace: { type: String, required: true },
-    price: {type: Number}
+    price: { type: Number },
 });
 
 reservationSchema.pre('save', async function (next) {
-    if (!this.customId) {
-        this.customId = uuidv4();
-    }
+    // if (!this.customId) {
+    //     this.customId = uuidv4();
+    // }
     if (!this.price) {
         const Car = mongoose.model('Car');
         const car = await Car.findOne({ number: this.carNumber });
@@ -32,8 +32,6 @@ reservationSchema.pre('save', async function (next) {
     }
 
     next();
-
-
 });
 
 const Reservation = mongoose.model('Reservation', reservationSchema);

@@ -3,6 +3,7 @@ const Car = require('./../models/carModel');
 const User = require('./../models/userModel');
 const catchAsync = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
 
 exports.getAllReservations = async (req, res) => {
     try {
@@ -47,6 +48,8 @@ exports.createReservation = catchAsync(async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(token);
+        console.log(decoded);
         const userId = decoded.id;
         const user = await User.findOne({
             _id: userId,
@@ -80,12 +83,18 @@ exports.createReservation = catchAsync(async (req, res) => {
 
         // car.isOccupied = true;
         await car.save();
-
-        user.reservations.push(reservationData.customId);
+        console.log('reservationData:', reservationData);
+        console.log('reservationData.customId:', reservationData.customId);
+        const reservationCustomId = uuidv4();
+        user.reservations.push(reservationCustomId);
         user.markModified('reservations');
         await user.save();
 
-        const newReservation = await Reservation.create(reservationData);
+        const newReservation = await Reservation.create({
+            ...reservationData,
+            customId: reservationCustomId,
+        });
+        console.log(newReservation);
 
         res.status(201).json({
             status: 'success',
